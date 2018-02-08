@@ -1,0 +1,62 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "698f50e8df185cbf6f941a313872c108",
+    "packages": [
+        {
+            "name": "ninvfeng/mongodb",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ninvfeng/mongodb.git",
+                "reference": "ff2afdf937bf28059ad7ee8416ed8d51e2499d61"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/ninvfeng/mongodb/ff2afdf937bf28059ad7ee8416ed8d51e2499d61.zip",
+                "reference": "ff2afdf937bf28059ad7ee8416ed8d51e2499d61",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ninvfeng\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ninvfeng",
+                    "email": "ninvfeng@qq.com"
+                }
+            ],
+            "description": "一个简单php7 mongodb数据库操作类",
+            "keywords": [
+                "mongodb",
+                "php"
+            ],
+            "time": "2018-02-08T04:01:25+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "ninvfeng/mongodb": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.0.0"
+    },
+    "platform-dev": []
+}

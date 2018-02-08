@@ -1,0 +1,22 @@
+{
+    "name": "ninvfeng/pwss",
+    "description": "pwss 一个基于swoole的简单PHP WebSocket Server",
+    "license":"MIT",
+    "version":"1.0",
+    "keywords" : [ "php", "swoole" , "websocket" ],
+    "authors": [
+        {
+            "name": "ninvfeng",
+            "email": "ninvfeng@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "ninvfeng/mongodb":"dev-develop"
+    },
+    "autoload": {
+        "psr-4": {
+            "ninvfeng\\": "src/"
+        }
+    }
+}
