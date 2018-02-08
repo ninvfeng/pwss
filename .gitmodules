@@ -1,0 +1,3 @@
+[submodule "vendor/ninvfeng/mongodb"]
+	path = vendor/ninvfeng/mongodb
+	url = git@github.com:ninvfeng/mongodb.git
