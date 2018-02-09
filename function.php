@@ -31,11 +31,9 @@ function config($key=''){
 
 //快速实例化mongodb
 function mongodb($table='test'){
-    static $_mongodb=[];
-    if(!empty($_mongodb[$table])){
-        return $_mongodb[$table];
-    }else{
-        $_mongodb[$table]=new \ninvfeng\mongodb($table,config('mongodb'));
-        return $_mongodb[$table];
+    static $_mongodb;
+    if(!$_mongodb){
+        $_mongodb=new \ninvfeng\mongodb(config('mongodb'));
     }
+    return $_mongodb->table($table);
 }
