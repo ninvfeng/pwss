@@ -12,10 +12,7 @@ function dump($var){
 
 //调试函数, 将数据记录到debug表
 function debug($data){
-    if(is_array($data)){
-        $data=json_encode($data);
-    }
-    return db('debug')->insert(['data'=>$data,'created_at'=>date('Y-m-d H:i:s')]);
+    return mongodb('debug')->insert(['data'=>$data,'created_at'=>date('Y-m-d H:i:s')]);
 }
 
 //读取配置文件
