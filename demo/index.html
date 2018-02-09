@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title></title>
+    <link rel="stylesheet" href="">
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        body{
+            background-color:#efefef;
+            font-size:.13rem;
+        }
+        .main{
+            padding-bottom:.44rem;
+            padding:.1rem;
+        }
+        .chat-box{
+            margin-bottom:.1rem;
+            zoom:1;
+        }
+        .chat-box:after{
+            content:'';
+            display:block;
+            clear:both;
+        }
+        .chat-img{
+            width:.35rem;
+            height:.35rem;
+            background-size:cover;
+            background-position:center;
+        }
+        .chat-content{
+            max-width:70%;
+            min-width:10%;
+            min-height:.35rem;
+            border-radius:0.05rem;
+            padding:0.1rem;
+            position:relative;
+            box-sizing: border-box;
+        }
+        .chat-content p{
+            position:relative;
+            z-index:33;
+            line-height:.18rem;
+        }
+        .left .chat-img{
+            float:left;
+        }
+        .left .chat-content{
+            background-color:#fff;
+            color:#666;
+            float:left;
+            margin-left:0.1rem;
+        }
+        .left .chat-content:before{
+            position: absolute;
+            top:.08rem;
+            left:-0.03rem;
+            width: .18rem;
+            height: .18rem;
+            content: ' ';
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            border-radius: 3px;
+            background: #fff;
+            z-index:22;
+        }
+        .right .chat-img{
+            float:right;
+        }
+        .right .chat-content{
+            background-color:#E8401E;
+            color:#fff;
+            float:right;
+            margin-right:0.1rem;
+        }
+        .right .chat-content:before{
+            position: absolute;
+            top:.08rem;
+            right:-0.03rem;
+            width: .18rem;
+            height: .18rem;
+            content: ' ';
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            border-radius: 3px;
+            background: #E8401E;
+            z-index:22;
+        }
+        .chat-input{
+            position:fixed;
+            bottom:0;
+            width:100%;
+            z-index:44;
+            margin:0 auto;
+            background-color:#fff;
+            padding:0.1rem;
+        }
+        .chat-input input{
+            height:.34rem;
+            background-color:#fff;
+            border:none;
+            border-bottom:1px solid #dadada;
+            width:77%;
+            padding:0;
+            box-sizing:border-box;
+            font-size:.13rem;
+        }
+        .chat-input input:focus{
+            outline:0;
+        }
+        .chat-input button{
+            height:.32rem;
+            background-color:#E8401E;
+            color:#fff;
+            border:none;
+            width:15%;
+            border-radius:0.05rem;
+            font-size:.12rem;
+            margin-left:0.05rem;
+        }
+    </style>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/qs.min.js"></script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',//屏幕旋转和窗口调整事件
+            recalc = function () {
+                var clientWidth = docEl.clientWidth;
+                if (!clientWidth) return;
+                docEl.style.fontSize = 100 * (clientWidth / 320) + 'px';
+            };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div class="main">
+            <div class="chat-box" :class="{'left':!v.isMine,'right':v.isMine}" v-for="v in list">
+                <div class="chat-img" :style="'background-image:url('+v.avatar+');'"></div>
+                <div class="chat-content">
+                    <p>{{v.content}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input v-model="content" type="text">
+            <button @click="send">发送</button>
+        </div>
+    </div>
+
+    <script>
+        var ws=new WebSocket('ws://127.0.0.1:8012');
+        // 打开Socket
+        ws.onopen = function(event) {
+
+          // 发送一个初始化消息 type appid userid 必填
+          ws.send(Qs.stringify({type:'init',appid:'webim',userid:1,name:'ninvfeng',avatar:'https://ws3.sinaimg.cn/large/006tNc79gy1fo9ymyr273j30hs0hsdgl.jpg'}));
+
+          // 监听消息
+          ws.onmessage = function(event) {
+            var res=Qs.parse(event.data);
+            console.log(res);
+            if(res.type=='init'){
+                vm.name=res.data.name
+                vm.avatar=res.data.avatar
+                vm.token=res.token
+            }else if(res.type=='msg'){
+                vm.list.push({name:res.from.name,avatar:res.from.avatar,content:res.data.content,isMine:false})
+            }
+          };
+        };
+        var vm=new Vue({
+            el:'#app',
+            data:{
+                list:[],
+                content:'',
+                name:'',
+                avatar:'',
+                token:'',
+                to:2
+            },
+            created(){
+
+            },
+            methods:{
+                send(){
+                    this.list.push({name:this.name,content:this.content,avatar:this.avatar,isMine:true})
+                    ws.send(Qs.stringify({type:'msg',token:this.token,to:this.to,save:1,data:{content:this.content}}));
+                    this.content=''
+                }
+            }
+        })
+
+
+        function get(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+    </script>
+
+</body>
+</html>
