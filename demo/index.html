@@ -125,8 +125,8 @@
             margin-left:0.05rem;
         }
     </style>
-    <script src="./js/vue.min.js"></script>
-    <script src="./js/qs.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.2/qs.min.js"></script>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -160,7 +160,7 @@
     </div>
 
     <script>
-        var ws=new WebSocket('ws://127.0.0.1:8012');
+        var ws=new WebSocket('ws://192.168.33.10:8012');
         // 打开Socket
         ws.onopen = function(event) {
 
