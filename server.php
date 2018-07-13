@@ -46,19 +46,31 @@ $ws->on('message', function ($ws, $frame) {
     elseif($data['type']=='msg'){
         $from=mongodb('user')->where(['_id'=>$data['token']])->find();
         unset($from['_id']);
-        $to=mongodb('user')->where(['appid'=>$from['appid'],'userid'=>$data['to']])->find();
 
         $msg['type']='msg';
         $msg['from']=$from;
-        $msg['data']=$data['data'];
-        $res=false;
-        if($to['sid']){
-            $res=$ws->push($to['sid'],http_build_query($msg));
-        }else{
-            $msg['type']='err';
-            $msg['from']='system';
-            $msg['data']='对方已离线';
-            $ws->push($frame->fd,http_build_query($msg));
+        $msg['data']=$data['data'];$res=false;
+
+        //群发
+        if($data['to']=='all'){
+            $online=mongodb('user')->where(['appid'=>$from['appid'],'sid'=>['$gt'=>0]])->find();
+            foreach($online as $k => $v){
+                $res=$ws->push($v['sid'],http_build_query($msg));
+            }
+        }
+
+        //单聊
+        else{
+            $to=mongodb('user')->where(['appid'=>$from['appid'],'userid'=>$data['to']])->find();
+
+            if($to['sid']){
+                $res=$ws->push($to['sid'],http_build_query($msg));
+            }else{
+                $msg['type']='err';
+                $msg['from']='system';
+                $msg['data']='对方已离线';
+                $ws->push($frame->fd,http_build_query($msg));
+            }            
         }
 
         //是否保存记录
