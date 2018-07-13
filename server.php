@@ -53,9 +53,15 @@ $ws->on('message', function ($ws, $frame) {
 
         //群发
         if($data['to']=='all'){
-            $online=mongodb('user')->where(['appid'=>$from['appid'],'sid'=>['$gt'=>0]])->find();
+            $online=mongodb('user')->where(['appid'=>$from['appid'],'sid'=>['$gt'=>0]])->select();
+            dump($online);
             foreach($online as $k => $v){
-                $res=$ws->push($v['sid'],http_build_query($msg));
+                if($v['sid'] != $frame->fd){
+                    $res=$ws->push($v['sid'],http_build_query($msg));
+                    if(!$res){
+                        mongodb('user')->where(['sid'=>$v['sid']])->update(['sid'=>0]);
+                    }
+                }
             }
         }
 
