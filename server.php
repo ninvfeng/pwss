@@ -54,7 +54,6 @@ $ws->on('message', function ($ws, $frame) {
         //群发
         if($data['to']=='all'){
             $online=mongodb('user')->where(['appid'=>$from['appid'],'sid'=>['$gt'=>0]])->select();
-            dump($online);
             foreach($online as $k => $v){
                 if($v['sid'] != $frame->fd){
                     $res=$ws->push($v['sid'],http_build_query($msg));
